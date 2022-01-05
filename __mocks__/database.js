@@ -42,16 +42,31 @@ const products = [
 ];
 
 const collection = (db) => {
+	// ### PRODUCTS DB FUNCTIONS ###
 	if (db === "products") {
 		return {
-			getById: () => "mock result",
-			filter: (filterString) => {
+			// Get product by ID
+			getById: (id) => {
+				return products.find((product) => product.id === id);
+			},
+			// Get product(s) by search string
+			filter: (searchString) => {
 				return products.filter((product) => {
 					return product.name
 						.toLowerCase()
-						.includes(filterString.toLowerCase());
+						.includes(searchString.toLowerCase());
 				});
 			},
+			// Add new product to db
+			add: (newObj) => {},
+			// Replace old product with provided
+			updateById: (id, newObj) => {
+				const productIndex = products.findIndex((product) => product.id === id);
+
+				products[productIndex] = newObj;
+			},
+			// Delete product based on id
+			deleteById: (id) => {},
 		};
 	}
 };
