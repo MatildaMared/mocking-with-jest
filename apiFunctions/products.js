@@ -38,8 +38,7 @@ async function getProductById(id) {
 	return product;
 }
 
-// //: void  // drar ifrån 1 av den valda produkten från lagret
-// function buyProduct(id) {}
+// Remove 1 from item stock
 async function buyProduct(id) {
 	if (typeof id !== "string") {
 		throw new Error("Error: Invalid id");
@@ -54,10 +53,23 @@ async function buyProduct(id) {
 	const updatedProduct = { ...product, inStock: product.inStock - 1 };
 
 	await collection("products").updateById(id, updatedProduct);
+
+	return updatedProduct;
 }
 
-// // lägger till en ny produkt
-// function addProduct(newProduct) {}
+// Add new product to database
+async function addProduct(newProduct) {
+	const { name, details, price, inStock, image } = newProduct;
+	if (typeof newProduct !== "object") {
+		throw new Error("Error: Provided argument must be an object");
+	} else if (!name || !details || !price || !inStock || !image) {
+		throw new Error(
+			"Error: New product object must contain following properties: name, details, price, inStock, image"
+		);
+	}
+	const addedProduct = await collection("products").add(newProduct);
+	return addedProduct;
+}
 
 // // ändrar en produkt genom att byta ut den
 // function modifyProduct(id, updatedProduct) {}
@@ -65,4 +77,4 @@ async function buyProduct(id) {
 // // tar bort en produkt från lagret
 // function deleteProduct(id) {}
 
-module.exports = { getProducts, getProductById, buyProduct };
+module.exports = { getProducts, getProductById, buyProduct, addProduct };

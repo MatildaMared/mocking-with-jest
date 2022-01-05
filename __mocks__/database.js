@@ -58,7 +58,11 @@ const collection = (db) => {
 				});
 			},
 			// Add new product to db
-			add: (newObj) => {},
+			add: (newObj) => {
+				const objToAdd = { id: products.length + 1, ...newObj };
+				products.push(objToAdd);
+				return objToAdd;
+			},
 			// Replace old product with provided
 			updateById: (id, newObj) => {
 				const productIndex = products.findIndex((product) => product.id === id);

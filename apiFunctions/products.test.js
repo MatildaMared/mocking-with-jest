@@ -1,4 +1,9 @@
-const { getProducts, getProductById, buyProduct } = require("./products");
+const {
+	getProducts,
+	getProductById,
+	buyProduct,
+	addProduct,
+} = require("./products");
 const collection = require("../database");
 jest.mock("../database");
 
@@ -147,6 +152,49 @@ describe("Products API functions", () => {
 
 			await expect(buyProduct(id)).rejects.toThrow(
 				"Error: No product matching the id"
+			);
+		});
+	});
+
+	describe("function addProduct", () => {
+		it("adds a new product to the database", async () => {
+			const productsBefore = await getProducts("");
+			const productsBeforeLength = await productsBefore.length;
+
+			const newProduct = {
+				name: "Padelracket",
+				details: "Med detta racket blir du garanterat en vinnare på padelbanan",
+				price: 1999,
+				inStock: 7,
+				image: "https://imgurl.se",
+			};
+
+			const addedProduct = await addProduct(newProduct);
+
+			const productsAfter = await getProducts("");
+
+			expect(productsAfter.length).toBe(productsBeforeLength + 1);
+			expect(addedProduct.name).toBe(newProduct.name);
+		});
+
+		it("throws an error if provided argument is not of type object", async () => {
+			const newProduct = "newProduct";
+
+			await expect(addProduct(newProduct)).rejects.toThrow(
+				"Error: Provided argument must be an object"
+			);
+		});
+
+		it("throws an error if a property is missing from new product object", async () => {
+			const newProduct = {
+				name: "Hockeyskridskor",
+				details: "Snabba, snygga, bekväma – vad mer kan behövas?",
+				inStock: 10,
+				image: "https://imgurl.se",
+			};
+
+			await expect(addProduct(newProduct)).rejects.toThrow(
+				"Error: New product object must contain following properties: name, details, price, inStock, image"
 			);
 		});
 	});
