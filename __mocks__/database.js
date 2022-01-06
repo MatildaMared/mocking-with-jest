@@ -83,6 +83,7 @@ const collection = (db) => {
 					return undefined;
 				}
 				products.splice(itemToRemoveIndex, 1);
+				return products;
 			},
 		};
 	}

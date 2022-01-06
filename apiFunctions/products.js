@@ -112,7 +112,17 @@ async function modifyProduct(id, productToUpdate) {
 // Removes product from database
 async function deleteProduct(id) {
 	try {
-		await collection("products").deleteById(id);
+		if (typeof id !== "string") {
+			throw new Error("Invalid id");
+		}
+
+		const products = await collection("products").deleteById(id);
+
+		if (!products) {
+			throw new Error("No product matching the id");
+		}
+
+		return products;
 	} catch (exception) {
 		throw new Error(exception);
 	}

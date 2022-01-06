@@ -257,7 +257,18 @@ describe("Products API functions", () => {
 			expect(deletedProductIndex).toBe(-1);
 		});
 
-		it("should throw an exception if provided id is not of type string", async () => {});
-		it("should throw an exception if no product matches the id", async () => {});
+		it("should throw an exception if provided id is not of type string", async () => {
+			const id = [];
+
+			await expect(deleteProduct(id)).rejects.toThrow("Error: Invalid id");
+		});
+
+		it("should throw an exception if no product matches the id", async () => {
+			const id = "thisProductDoesNotExist";
+
+			await expect(deleteProduct(id)).rejects.toThrow(
+				"Error: No product matching the id"
+			);
+		});
 	});
 });
