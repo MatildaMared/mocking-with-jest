@@ -4,6 +4,7 @@ const {
 	buyProduct,
 	addProduct,
 	modifyProduct,
+	deleteProduct,
 } = require("./products");
 const collection = require("../database");
 jest.mock("../database");
@@ -241,5 +242,22 @@ describe("Products API functions", () => {
 		});
 	});
 
-	describe("function deleteProduct", () => {});
+	describe("function deleteProduct", () => {
+		it("should delete a product from the database", async () => {
+			const id = "3";
+
+			await deleteProduct(id);
+
+			const allProducts = await getProducts("");
+
+			const deletedProductIndex = allProducts.findIndex(
+				(product) => product.id === id
+			);
+
+			expect(deletedProductIndex).toBe(-1);
+		});
+
+		it("should throw an exception if provided id is not of type string", async () => {});
+		it("should throw an exception if no product matches the id", async () => {});
+	});
 });

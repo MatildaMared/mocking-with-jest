@@ -75,7 +75,15 @@ const collection = (db) => {
 				return newProduct;
 			},
 			// Delete product based on id
-			deleteById: (id) => {},
+			deleteById: (id) => {
+				const itemToRemoveIndex = products.findIndex(
+					(product) => product.id === id
+				);
+				if (itemToRemoveIndex === -1) {
+					return undefined;
+				}
+				products.splice(itemToRemoveIndex, 1);
+			},
 		};
 	}
 };

@@ -109,8 +109,14 @@ async function modifyProduct(id, productToUpdate) {
 	}
 }
 
-// // tar bort en produkt från lagret
-// function deleteProduct(id) {}
+// Removes product from database
+async function deleteProduct(id) {
+	try {
+		await collection("products").deleteById(id);
+	} catch (exception) {
+		throw new Error(exception);
+	}
+}
 
 module.exports = {
 	getProducts,
@@ -118,4 +124,5 @@ module.exports = {
 	buyProduct,
 	addProduct,
 	modifyProduct,
+	deleteProduct,
 };
