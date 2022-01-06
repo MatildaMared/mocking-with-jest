@@ -3,6 +3,7 @@ const {
 	getProductById,
 	buyProduct,
 	addProduct,
+	modifyProduct,
 } = require("./products");
 const collection = require("../database");
 jest.mock("../database");
@@ -177,7 +178,7 @@ describe("Products API functions", () => {
 			expect(addedProduct.name).toBe(newProduct.name);
 		});
 
-		it("throws an error if provided argument is not of type object", async () => {
+		it("throws an exception if provided argument is not of type object", async () => {
 			const newProduct = "newProduct";
 
 			await expect(addProduct(newProduct)).rejects.toThrow(
@@ -185,7 +186,7 @@ describe("Products API functions", () => {
 			);
 		});
 
-		it("throws an error if a property is missing from new product object", async () => {
+		it("throws an exception if a property is missing from new product object", async () => {
 			const newProduct = {
 				name: "Hockeyskridskor",
 				details: "Snabba, snygga, bekväma – vad mer kan behövas?",
@@ -198,4 +199,47 @@ describe("Products API functions", () => {
 			);
 		});
 	});
+
+	describe("function modifyProduct", () => {
+		it("should update a product in the database successfully", async () => {
+			const id = "3";
+
+			const productToUpdate = {
+				details: "Ett mycket kul spel att spela på sommaren",
+			};
+
+			const updatedProduct = await modifyProduct(id, productToUpdate);
+
+			expect(updatedProduct.details).toBe(productToUpdate.details);
+		});
+
+		it("throws an exception if provided id is not of type string", async () => {
+			const id = undefined;
+			const productToUpdate = { name: "Skridskor" };
+
+			await expect(modifyProduct(id, productToUpdate)).rejects.toThrow(
+				"Error: Invalid id"
+			);
+		});
+
+		it("throws an exception if no product matches the id", async () => {
+			const id = "noneMatchingId";
+			const productToUpdate = { description: "Super fun game" };
+
+			await expect(modifyProduct(id, productToUpdate)).rejects.toThrow(
+				"Error: No product matching the id"
+			);
+		});
+
+		it("throws an exception if the second argument is not of type object", async () => {
+			const id = "3";
+			const productToUpdate = "product";
+
+			await expect(modifyProduct(id, productToUpdate)).rejects.toThrow(
+				"Error: Second argument must be of type object"
+			);
+		});
+	});
+
+	describe("function deleteProduct", () => {});
 });

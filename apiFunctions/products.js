@@ -25,56 +25,97 @@ async function getProducts(searchString) {
 
 // Returns a single product based on its id
 async function getProductById(id) {
-	if (typeof id !== "string") {
-		throw new Error("Error: Invalid id");
+	try {
+		if (typeof id !== "string") {
+			throw new Error("Invalid id");
+		}
+
+		const product = await collection("products").getById(id);
+
+		if (!product) {
+			return undefined;
+		}
+
+		return product;
+	} catch (exception) {
+		throw new Error(exception);
 	}
-
-	const product = await collection("products").getById(id);
-
-	if (!product) {
-		return undefined;
-	}
-
-	return product;
 }
 
 // Remove 1 from item stock
 async function buyProduct(id) {
-	if (typeof id !== "string") {
-		throw new Error("Error: Invalid id");
+	try {
+		if (typeof id !== "string") {
+			throw new Error("Invalid id");
+		}
+
+		const product = await collection("products").getById(id);
+
+		if (!product) {
+			throw new Error("No product matching the id");
+		}
+
+		const updatedProduct = { ...product, inStock: product.inStock - 1 };
+
+		await collection("products").updateById(id, updatedProduct);
+
+		return updatedProduct;
+	} catch (exception) {
+		throw new Error(exception);
 	}
-
-	const product = await collection("products").getById(id);
-
-	if (!product) {
-		throw new Error("Error: No product matching the id");
-	}
-
-	const updatedProduct = { ...product, inStock: product.inStock - 1 };
-
-	await collection("products").updateById(id, updatedProduct);
-
-	return updatedProduct;
 }
 
 // Add new product to database
 async function addProduct(newProduct) {
-	const { name, details, price, inStock, image } = newProduct;
-	if (typeof newProduct !== "object") {
-		throw new Error("Error: Provided argument must be an object");
-	} else if (!name || !details || !price || !inStock || !image) {
-		throw new Error(
-			"Error: New product object must contain following properties: name, details, price, inStock, image"
-		);
+	try {
+		const { name, details, price, inStock, image } = newProduct;
+		if (typeof newProduct !== "object") {
+			throw new Error("Provided argument must be an object");
+		} else if (!name || !details || !price || !inStock || !image) {
+			throw new Error(
+				"New product object must contain following properties: name, details, price, inStock, image"
+			);
+		}
+		const addedProduct = await collection("products").add(newProduct);
+		return addedProduct;
+	} catch (exception) {
+		throw new Error(exception);
 	}
-	const addedProduct = await collection("products").add(newProduct);
-	return addedProduct;
 }
 
-// // ändrar en produkt genom att byta ut den
-// function modifyProduct(id, updatedProduct) {}
+// Updates a product
+async function modifyProduct(id, productToUpdate) {
+	try {
+		if (typeof id !== "string") {
+			throw new Error("Invalid id");
+		} else if (typeof productToUpdate !== "object") {
+			throw new Error("Second argument must be of type object");
+		}
+
+		const updatedProduct = await collection("products").updateById(
+			id,
+			productToUpdate
+		);
+
+		console.log(updatedProduct);
+
+		if (!updatedProduct) {
+			throw new Error("No product matching the id");
+		}
+
+		return updatedProduct;
+	} catch (exception) {
+		throw new Error(exception);
+	}
+}
 
 // // tar bort en produkt från lagret
 // function deleteProduct(id) {}
 
-module.exports = { getProducts, getProductById, buyProduct, addProduct };
+module.exports = {
+	getProducts,
+	getProductById,
+	buyProduct,
+	addProduct,
+	modifyProduct,
+};

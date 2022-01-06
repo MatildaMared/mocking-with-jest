@@ -66,8 +66,13 @@ const collection = (db) => {
 			// Replace old product with provided
 			updateById: (id, newObj) => {
 				const productIndex = products.findIndex((product) => product.id === id);
+				if (productIndex === -1) {
+					return undefined;
+				}
+				const newProduct = { ...products[productIndex], ...newObj };
 
-				products[productIndex] = newObj;
+				products[productIndex] = newProduct;
+				return newProduct;
 			},
 			// Delete product based on id
 			deleteById: (id) => {},
